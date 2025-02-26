@@ -9,21 +9,28 @@ If your plugin does not need CSS, delete this file.
 
 .note-to-card-container {
     position: relative;
-    width: 600px !important;
     margin: 0 auto;
     background: white;
-    border-radius: 16px !important;
+    border-radius: 16px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
+    overflow: visible;
+    min-width: 600px;
+    max-width: 1080px;
+}
+
+.note-to-card-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--card-padding, 20px);
+    overflow: visible;
 }
 
 .note-to-card-content {
     position: relative;
     z-index: 1;
-    padding: var(--card-padding, 20px);
     width: 100%;
     line-height: 1.6;
-    border-radius: 16px;
 }
 
 .note-to-card-watermark {
@@ -41,23 +48,31 @@ If your plugin does not need CSS, delete this file.
 .note-to-card-modal-container {
     display: flex;
     gap: 20px;
-    height: 100%;
+    height: auto;
+    min-height: 300px;
     padding: 0;
     background-color: var(--background-primary);
     position: relative;
-    padding-bottom: 60px;
     width: 90vw !important;
     max-width: 1400px;
 }
 
+.note-to-card-main-container {
+    display: flex;
+    height: auto;
+    min-height: 300px;
+    gap: 20px;
+    background-color: var(--background-primary);
+}
+
 .note-to-card-preview-section {
-    flex: 5;
+    flex: 1;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-width: 0;
     background: var(--background-secondary);
     border-right: 1px solid var(--background-modifier-border);
-    min-width: 0;
+    min-height: 300px;
 }
 
 .note-to-card-preview-section h3 {
@@ -71,20 +86,33 @@ If your plugin does not need CSS, delete this file.
 .note-to-card-preview {
     flex: 1;
     overflow: auto;
-    padding: 60px;
+    padding: 10px;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     background: var(--background-primary);
 }
 
+.note-to-card-preview::-webkit-scrollbar {
+    width: 8px;
+}
+
+.note-to-card-preview::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.note-to-card-preview::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-bg);
+    border-radius: 4px;
+}
+
 .note-to-card-control-section {
-    flex: 1;
+    width: 300px;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-width: 280px;
-    max-width: 320px;
+    background: var(--background-primary);
+    justify-content: space-between;
+    height: auto;
 }
 
 .note-to-card-control-section h3 {
@@ -96,15 +124,18 @@ If your plugin does not need CSS, delete this file.
 }
 
 .note-to-card-control-content {
-    flex: 1;
+    flex: 0 1 auto;
     overflow-y: auto;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .note-to-card-control-content .setting-item {
     border-top: none;
-    padding: 16px 0;
-    margin-bottom: 8px;
+    padding: 12px 0;
+    margin-bottom: 4px;
 }
 
 .note-to-card-control-content .setting-item-name {
@@ -118,17 +149,15 @@ If your plugin does not need CSS, delete this file.
 }
 
 .note-to-card-button-container {
-    position: absolute;
+    position: sticky;
     bottom: 0;
-    left: 0;
-    right: 0;
+    padding: 12px;
+    border-top: 1px solid var(--background-modifier-border);
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
-    padding: 16px 24px;
-    background: var(--background-secondary-alt);
-    border-top: 1px solid var(--background-modifier-border);
-    z-index: 1;
+    gap: 8px;
+    background: var(--background-primary);
+    z-index: 10;
 }
 
 .note-to-card-button-container button {
@@ -153,19 +182,19 @@ If your plugin does not need CSS, delete this file.
 .note-to-card-color-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    padding: 12px 0;
-    margin-bottom: 20px;
+    gap: 6px;
+    padding: 8px 0;
+    margin-bottom: 16px;
 }
 
 .note-to-card-color-option {
     width: 100%;
     aspect-ratio: 1;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     border: 2px solid transparent;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .note-to-card-color-option:hover {
@@ -219,6 +248,7 @@ If your plugin does not need CSS, delete this file.
     display: block;
     margin: 1em auto;
     border-radius: 8px;
+    object-fit: contain;
 }
 
 .note-to-card-content pre {
@@ -239,4 +269,45 @@ If your plugin does not need CSS, delete this file.
 .note-to-card-content ol {
     padding-left: 1.5em;
     margin: 1em 0;
+}
+
+/* 添加标题样式 */
+.note-to-card-title {
+    font-size: 1.8em;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: black;
+    flex-shrink: 0;
+}
+
+/* 添加标签样式 */
+.note-to-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.note-to-card-tag {
+    background: var(--background-modifier-border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* 移除尺寸选择器相关样式 */
+.note-to-card-size-selector,
+.note-to-card-size-option {
+    display: none;
+}
+
+/* 调整预览容器的样式 */
+.note-to-card-preview .note-to-card-container {
+    transform-origin: center;
+    max-width: 95%;
+    max-height: 95%;
+    margin: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
