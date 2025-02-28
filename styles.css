@@ -10,12 +10,18 @@ If your plugin does not need CSS, delete this file.
 .note-to-card-container {
     position: relative;
     margin: 0 auto;
-    background: white;
     border-radius: 16px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     overflow: visible;
-    min-width: 600px;
+    width: var(--card-width, 750px); /* 修改默认宽度为750px */
     max-width: 1080px;
+    transition: all 0.3s ease;
+    padding: 40px;
+    
+    /* 使用CSS变量设置自定义样式 */
+    font-family: var(--custom-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+    font-size: var(--custom-font-size, 16px);
+    text-align: var(--custom-text-align);
 }
 
 .note-to-card-wrapper {
@@ -24,37 +30,42 @@ If your plugin does not need CSS, delete this file.
     flex-direction: column;
     padding: var(--card-padding, 20px);
     overflow: visible;
+    padding-top: 40px;
 }
 
 .note-to-card-content {
     position: relative;
     z-index: 1;
     width: 100%;
-    line-height: 1.6;
+    padding-top: 20px;
+    font-family: inherit;
 }
 
 .note-to-card-watermark {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    font-size: 24px;
-    color: #000;
-    pointer-events: none;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 32px;
     white-space: nowrap;
+    pointer-events: none;
     z-index: 0;
+    width: 100%;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.note-to-card-modal {
+    background-color: #f8f9fa;
 }
 
 .note-to-card-modal-container {
     display: flex;
-    gap: 20px;
-    height: auto;
-    min-height: 300px;
-    padding: 0;
-    background-color: var(--background-primary);
-    position: relative;
-    width: 90vw !important;
-    max-width: 1400px;
+    width: 100%;
+    height: 100%;
+    gap: 0;
+    background: #f8f9fa;
+    overflow: hidden;
 }
 
 .note-to-card-main-container {
@@ -69,28 +80,29 @@ If your plugin does not need CSS, delete this file.
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0;
-    background: var(--background-secondary);
-    border-right: 1px solid var(--background-modifier-border);
-    min-height: 300px;
+    background: #f1f3f5;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .note-to-card-preview-section h3 {
     margin: 0;
     padding: 16px 20px;
-    color: var(--text-normal);
+    color: #495057;
     font-size: 1.2em;
-    border-bottom: 1px solid var(--background-modifier-border);
+    border-bottom: 1px solid #e9ecef;
+    background: #ffffff;
 }
 
 .note-to-card-preview {
     flex: 1;
     overflow: auto;
-    padding: 10px;
+    padding: 40px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    background: var(--background-primary);
+    align-items: flex-start;
 }
 
 .note-to-card-preview::-webkit-scrollbar {
@@ -148,58 +160,98 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-muted);
 }
 
+/* 修改按钮容器样式 - 居中悬浮 */
 .note-to-card-button-container {
-    position: sticky;
-    bottom: 0;
-    padding: 12px;
-    border-top: 1px solid var(--background-modifier-border);
+    position: fixed;
+    left: 50%;
+    bottom: 40px;
+    transform: translateX(-50%);
     display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    background: var(--background-primary);
-    z-index: 10;
+    gap: 12px;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
 
+/* 科技感按钮样式 */
 .note-to-card-button-container button {
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
+    padding: 10px 24px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    color: var(--text-normal);
+    background: transparent;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 主要按钮样式 */
+.note-to-card-button-container button.mod-cta {
+    background: var(--interactive-accent);
+    color: #fff;
+}
+
+/* 悬浮效果 */
 .note-to-card-button-container button:hover {
+    background: rgba(0, 0, 0, 0.06);
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.note-to-card-button-container button.primary {
-    background-color: var(--interactive-accent);
-    color: var(--text-on-accent);
+.note-to-card-button-container button.mod-cta:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
 
+/* 点击效果 */
+.note-to-card-button-container button:active {
+    transform: translateY(0);
+}
+
+/* 发光动画效果 */
+.note-to-card-button-container button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+.note-to-card-button-container button:hover::before {
+    transform: translateX(100%);
+}
+
+/* 调整渐变色网格布局 */
 .note-to-card-color-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 6px;
-    padding: 8px 0;
-    margin-bottom: 16px;
+    margin: 12px 0;
 }
 
 .note-to-card-color-option {
-    width: 100%;
-    aspect-ratio: 1;
+    width: 28px;
+    height: 28px;
     border-radius: 6px;
     cursor: pointer;
     border: 2px solid transparent;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .note-to-card-color-option:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .note-to-card-color-option.selected {
@@ -208,30 +260,78 @@ If your plugin does not need CSS, delete this file.
                 0 0 0 4px var(--interactive-accent);
 }
 
-/* 添加滑块样式 */
-.note-to-card-control-content .slider {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 4px;
-    border-radius: 2px;
-    background: var(--background-modifier-border);
-    outline: none;
-    margin: 8px 0;
+/* 修改渐变色滑块样式 */
+.note-to-card-gradient-slider-container {
+    padding: 16px 0;
 }
 
-.note-to-card-control-content .slider::-webkit-slider-thumb {
+.note-to-card-gradient-slider {
     -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 100%;
+    height: 24px;
+    border-radius: 12px;
+    outline: none;
+    cursor: pointer;
+    border: 2px solid var(--background-primary);
+    background-clip: padding-box;
+}
+
+.note-to-card-gradient-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--background-primary);
+    border: 2px solid var(--text-normal);
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.note-to-card-gradient-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    border-color: var(--interactive-accent);
+}
+
+.note-to-card-gradient-slider::-webkit-slider-thumb:active {
+    transform: scale(0.95);
+    border-width: 3px;
+}
+
+/* 删除之前的渐变预览相关样式 */
+.note-to-card-gradient-preview,
+.note-to-card-gradient-section {
+    display: none;
+}
+
+/* 优化滑块样式 */
+.note-to-card-settings-section .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--background-modifier-border);
+    outline: none;
+    margin: 16px 0;
+    cursor: pointer;
+}
+
+.note-to-card-settings-section .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: var(--interactive-accent);
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.note-to-card-control-content .slider::-webkit-slider-thumb:hover {
+.note-to-card-settings-section .slider::-webkit-slider-thumb:hover {
     transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .note-to-card-path-input {
@@ -247,8 +347,17 @@ If your plugin does not need CSS, delete this file.
     height: auto;
     display: block;
     margin: 1em auto;
-    border-radius: 8px;
     object-fit: contain;
+}
+
+/* 分开设置圆角样式 */
+.note-to-card-container[data-image-radius] .note-to-card-content img {
+    border-radius: var(--image-radius) !important;
+}
+
+/* 确保预览时也应用圆角 */
+.note-to-card-preview .note-to-card-content img {
+    border-radius: inherit;
 }
 
 .note-to-card-content pre {
@@ -263,6 +372,7 @@ If your plugin does not need CSS, delete this file.
 .note-to-card-content p {
     margin: 1em 0;
     word-break: break-word;
+    text-align: inherit;
 }
 
 .note-to-card-content ul,
@@ -273,11 +383,12 @@ If your plugin does not need CSS, delete this file.
 
 /* 添加标题样式 */
 .note-to-card-title {
-    font-size: 1.8em;
+    font-size: 24px;
     font-weight: 600;
-    margin-bottom: 16px;
-    color: black;
-    flex-shrink: 0;
+    margin-bottom: 24px;
+    line-height: 1.4;
+    color: var(--text-normal);
+    font-family: inherit;
 }
 
 /* 添加标签样式 */
@@ -295,6 +406,7 @@ If your plugin does not need CSS, delete this file.
     border-radius: 4px;
     font-size: 12px;
     color: var(--text-muted);
+    font-family: inherit;
 }
 
 /* 移除尺寸选择器相关样式 */
@@ -305,9 +417,583 @@ If your plugin does not need CSS, delete this file.
 
 /* 调整预览容器的样式 */
 .note-to-card-preview .note-to-card-container {
-    transform-origin: center;
-    max-width: 95%;
-    max-height: 95%;
-    margin: auto;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    width: var(--card-width, 750px);
+    margin: 0 auto;
+    transform-origin: top center;
+    max-width: none;
+    width: var(--card-width, 750px) !important; /* 确保宽度设置优先级 */
+}
+
+/* 移除不再需要的字体选择器自定义样式 */
+.note-to-card-font-selector,
+.note-to-card-font-selector h3,
+.note-to-card-font-selector select {
+    display: none;
+}
+
+/* 更新内容样式以支持新的设置 */
+.note-to-card-content > * {
+    margin-bottom: calc(1em * var(--content-spacing, 1.6));
+}
+
+.note-to-card-content p:last-child,
+.note-to-card-content ul:last-child,
+.note-to-card-content ol:last-child {
+    margin-bottom: 0;
+}
+
+/* 修改作者信息样式 */
+.note-to-card-author {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+    margin-bottom: 20px;  /* 只保留底部边距 */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);  /* 减淡分割线 */
+}
+
+/* 顶部作者信息特殊处理 */
+.note-to-card-wrapper > .note-to-card-author:first-child {
+    margin-bottom: 30px;
+    order: -1;  /* 确保在标题之前 */
+}
+
+/* 底部作者信息特殊处理 */
+.note-to-card-wrapper > .note-to-card-author:last-child {
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+
+.note-to-card-avatar-container {
+    flex-shrink: 0;
+}
+
+.note-to-card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.note-to-card-author-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: inherit;
+}
+
+.note-to-card-author-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-normal);
+}
+
+.note-to-card-author-extra {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* 水印头部样式 */
+.note-to-card-watermark-header {
+    color: #ff6b6b;
+    font-size: 14px;
+    padding-right: 60px;
+    font-family: inherit;
+}
+
+/* 移除 AI 标签区域的相关样式 */
+.note-to-card-ai-tags,
+.note-to-card-ai-header,
+.note-to-card-ai-tags-list,
+.note-to-card-ai-tag {
+    display: none;
+}
+
+/* 添加设置分区样式 */
+.note-to-card-settings-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.note-to-card-settings-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.note-to-card-settings-section h4 {
+    color: #495057;
+    margin: 1.5em 0 1em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* 设置项样式 */
+.note-to-card-settings-section .setting-item {
+    padding: 6px 0;
+    border: none;
+}
+
+.note-to-card-settings-section .setting-item-name {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-normal);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: inherit;
+}
+
+.note-to-card-settings-section .setting-item-description {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+    font-family: inherit;
+}
+
+/* 水印底部样式 */
+.note-to-card-watermark-header.bottom {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    padding: 0;
+}
+
+/* 修改设置面板布局 */
+.note-to-card-settings-panel {
+    width: 35%;
+    min-width: 350px;
+    height: 100vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-right: 1px solid #e9ecef;
+    padding: 20px;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.02);
+}
+
+.note-to-card-settings-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* 修改作者信息的位置样式 */
+.note-to-card-author.top {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-top: none;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+/* 确保所有文本元素都遵循对齐方式 */
+.note-to-card-content h1,
+.note-to-card-content h2,
+.note-to-card-content h3,
+.note-to-card-content h4,
+.note-to-card-content h5,
+.note-to-card-content h6,
+.note-to-card-content li {
+    text-align: inherit;
+    font-family: inherit;
+}
+
+/* 添加缩放控制按钮样式 */
+.note-to-card-zoom-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(10px);
+}
+
+.note-to-card-zoom-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.note-to-card-zoom-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--text-normal);
+}
+
+.note-to-card-zoom-btn:nth-child(2) {
+    width: auto;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-normal);
+}
+
+.note-to-card-preview-wrapper {
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    transition: transform 0.3s ease;
+}
+
+/* 滚动条样式优化 */
+.note-to-card-settings-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.note-to-card-settings-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.note-to-card-settings-content::-webkit-scrollbar-thumb {
+    background-color: #dee2e6;
+    border-radius: 4px;
+}
+
+/* 优化设置项的布局 */
+.note-to-card-settings-section .setting-item-control {
+    padding-top: 4px;
+}
+
+/* 调整下拉菜单和输入框的样式 */
+.note-to-card-settings-section select,
+.note-to-card-settings-section input[type="text"] {
+    font-size: 12px;
+    height: 28px;
+}
+
+/* 调整滑块标签的样式 */
+.note-to-card-settings-section .slider-value {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* 渐变编辑器样式 */
+.note-to-card-gradient-editor {
+    margin: 16px 0;
+    padding: 16px;
+    background: var(--background-secondary);
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.note-to-card-gradient-bar {
+    height: 24px;
+    border-radius: 12px;
+    position: relative;
+    border: 2px solid var(--background-primary);
+}
+
+/* 颜色选择器容器 */
+.note-to-card-color-stops {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+
+.note-to-card-color-stop {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--text-normal);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.note-to-card-color-stop:hover {
+    transform: scale(1.1);
+    border-color: var(--interactive-accent);
+}
+
+.note-to-card-color-stop input[type="color"] {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* 角度滑块容器 */
+.note-to-card-angle-container {
+    display: flex;
+    justify-content: center;
+    padding: 0 16px;
+}
+
+.note-to-card-angle-slider {
+    -webkit-appearance: none;
+    width: 120px;
+    height: 2px;
+    background: var(--background-modifier-border);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.note-to-card-angle-slider:hover {
+    opacity: 1;
+}
+
+.note-to-card-angle-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--interactive-accent);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.note-to-card-angle-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* 竖版标题布局 */
+.note-to-card-container[data-layout="vertical-title"] {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    padding: 40px;
+}
+
+.note-to-card-container[data-layout="vertical-title"] .note-to-card-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    width: 100%;
+}
+
+.note-to-card-container[data-layout="vertical-title"] .note-to-card-title-section {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 20px 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    height: fit-content;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+}
+
+.note-to-card-container[data-layout="vertical-title"] .note-to-card-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    padding: 20px 0;
+    line-height: 1.4;
+    border-bottom: none;
+}
+
+.note-to-card-container[data-layout="vertical-title"] .note-to-card-content {
+    flex: 1;
+    min-height: 400px;
+    padding: 20px 0;
+}
+
+/* 信纸布局样式 */
+.note-to-card-container[data-layout="letter-style"] {
+    --font-family: var(--custom-font-family, "LXGW WenKai", serif);
+    --font-size: var(--custom-font-size, 16px);
+    background-color: #f7f2e9 !important; /* 使用 !important 确保背景色生效 */
+    padding: 60px;
+    border: 1px solid #e5e0d2;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.note-to-card-container[data-layout="letter-style"] .note-to-card-content {
+    font-family: var(--font-family);
+    line-height: 2;
+    text-align: justify;
+    color: #2c3e50;
+}
+
+/* 杂志版布局 */
+.note-to-card-container[data-layout="magazine"] {
+    --font-family: var(--custom-font-family, "Source Han Serif SC", serif);
+    --font-size: 16px;
+    padding: 40px;
+    background-color: #ffffff;
+}
+
+.note-to-card-container[data-layout="magazine"] .note-to-card-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    line-height: 1.4;
+}
+
+/* 修改首字下沉效果，确保针对正文内容 */
+.note-to-card-container[data-layout="magazine"] .note-to-card-content > :first-child:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(.callout):not(blockquote):first-letter {
+    float: left;
+    font-size: 4em;
+    line-height: 0.8;
+    padding: 0.1em 0.1em 0 0;
+    color: var(--text-normal);
+    font-weight: 600;
+}
+
+.note-to-card-container[data-layout="magazine"] .note-to-card-content {
+    font-size: 16px;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+/* 杂志版的其他样式优化 */
+.note-to-card-container[data-layout="magazine"] h1,
+.note-to-card-container[data-layout="magazine"] h2 {
+    font-size: 28px;
+    margin: 1.5em 0 1em;
+    font-weight: 600;
+}
+
+.note-to-card-container[data-layout="magazine"] blockquote {
+    margin: 2em 0;
+    padding: 1em 2em;
+    border-left: 4px solid var(--text-normal);
+    background: rgba(0, 0, 0, 0.03);
+    font-style: italic;
+}
+
+/* 确保字体继承到子元素 */
+.note-to-card-content,
+.note-to-card-title,
+.note-to-card-title-section {
+    font-family: inherit;
+}
+
+/* 设置项hover效果 */
+.setting-item:hover {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+/* 统一左右两侧的标题和区块样式 */
+.note-to-card-settings-panel,
+.note-to-card-preview-section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 统一标题样式 */
+.note-to-card-settings-panel h3,
+.note-to-card-preview-section h3 {
+    margin: 0;
+    padding: 0 24px;  /* 减少上下内边距 */
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    height: 48px;     /* 减小高度 */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+/* 左侧设置面板样式 */
+.note-to-card-settings-panel {
+    width: 35%;
+    min-width: 350px;
+    background: #ffffff;
+    border-right: 1px solid #e9ecef;
+}
+
+/* 右侧预览区域样式 */
+.note-to-card-preview-section {
+    flex: 1;
+    background: #f1f3f5;
+}
+
+/* 内容区域样式 */
+.note-to-card-settings-content,
+.note-to-card-preview {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;    /* 稍微减少内边距 */
+}
+
+/* 设置区块样式 */
+.note-to-card-settings-section {
+    background: #ffffff;
+    padding: 12px 0;  /* 减少内边距 */
+    margin-bottom: 12px;
+}
+
+/* 设置区块标题样式 */
+.note-to-card-settings-section h4 {
+    margin: 0 0 12px 0;
+    padding-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+/* 设置项样式优化 */
+.setting-item {
+    padding: 8px 0;   /* 减少内边距 */
+    border-top: none;
+    border-bottom: none;  /* 移除分割线 */
+}
+
+.setting-item:not(:last-child) {
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.setting-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+.setting-item-description {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 确保所有文本元素继承字体设置 */
+.note-to-card-container * {
+    font-family: inherit;
+}
+
+/* 为每个布局设置默认字体，但允许被自定义字体覆盖 */
+.note-to-card-container[data-layout="letter-style"] {
+    --font-family: var(--custom-font-family, "LXGW WenKai", serif);
+}
+
+.note-to-card-container[data-layout="ancient-book"] {
+    --font-family: var(--custom-font-family, "LXGW WenKai", serif);
+}
+
+.note-to-card-container[data-layout="magazine"] {
+    --font-family: var(--custom-font-family, "Source Han Serif SC", serif);
+}
+
+/* 确保所有布局都继承字体设置 */
+.note-to-card-container {
+    font-family: var(--custom-font-family, '"LXGW WenKai", "FZShuSong-Z01", "Songti SC", SimSun, serif');
+}
+
+/* 为每个布局设置默认字体，但允许被自定义字体覆盖 */
+.note-to-card-container[data-layout] {
+    --font-family: var(--custom-font-family, '"LXGW WenKai", "FZShuSong-Z01", "Songti SC", SimSun, serif');
 }
